@@ -1,0 +1,58 @@
+﻿# =========================
+# Build results
+# =========================
+bin/
+obj/
+out/
+
+# =========================
+# Visual Studio files
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Test results
+# =========================
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# =========================
+# Rider / VS Code
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# NuGet packages (optional)
+# =========================
+packages/
+
+# =========================
+# Environment / secrets
+# =========================
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.env
+
+# =========================
+# Publish output
+# =========================
+publish/
