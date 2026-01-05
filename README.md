@@ -1,5 +1,7 @@
 ﻿🧪 Web Service Unit Testing Framework (NUnit + Moq)
-📌 Purpose of This Project
+This repository is designed to showcase industry-standard controller-level unit testing practices commonly used in enterprise ASP.NET Core applications.
+
+## 📌 Purpose
 
 This project demonstrates controller-level unit testing for REST APIs using NUnit and Moq in ASP.NET Core.
 
@@ -98,6 +100,14 @@ Assert.That(result, Is.InstanceOf<OkObjectResult>());
 6️⃣ Verify Service Call
 
 _mockService.Verify(s => s.Create(It.IsAny<Booking>()), Times.Once);
+
+## 🔄 CI/CD Readiness
+
+This framework is designed to be CI/CD friendly and can be easily integrated into pipelines (Azure DevOps / GitHub Actions / GitLab CI) to ensure:
+- Automated test execution on every build
+- Fast feedback on controller-level failures
+- Quality gates before deployment
+
 
 
 🎤 Interview-Ready Explanation (Short Answer)
