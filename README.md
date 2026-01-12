@@ -262,5 +262,6 @@ This project includes a **GitHub Actions CI pipeline** that automatically:
 ✔ Interview-ready structure and explanations
 
 ---
-
+I’ve built a controller-level unit testing framework using NUnit and Moq and integrated it with GitHub Actions CI.
+Tests run on every push, PR, and daily schedule, ensuring fast feedback and quality gates before deployment.
 📌 **This repository is intentionally built as a reference implementation for enterprise-grade Web API unit testing and CI practices.**
