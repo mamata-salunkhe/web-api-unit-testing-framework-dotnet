@@ -1,22 +1,41 @@
-﻿🧪 Web Service Unit Testing Framework (NUnit + Moq)
-This repository is designed to showcase industry-standard controller-level unit testing practices commonly used in enterprise ASP.NET Core applications.
+# 🧪 Web Service Unit Testing Framework (ASP.NET Core | NUnit | Moq)
 
+This repository demonstrates **industry-standard controller-level unit testing** and **CI-enabled automation** practices commonly used in enterprise ASP.NET Core applications.
+
+It is intentionally designed as a **clean, interview-ready reference project** for Senior SDET / QA Automation / Backend testing roles.
+---
 ## 📌 Purpose
 
-This project demonstrates controller-level unit testing for REST APIs using NUnit and Moq in ASP.NET Core.
+The goal of this framework is to validate **Web API controller behavior** in isolation by:
 
-## The goal is to validate:
-API behavior
-HTTP status codes
-Service interactions
-without calling real databases or external services.
+* Verifying HTTP status codes
+* Validating input handling
+* Ensuring correct service interactions
+* Avoiding real databases or external systems
 
-This is a controller-level unit testing framework using NUnit and Moq.
-Controllers depend on service interfaces, which I mock to isolate logic.
-I validate status codes like 200, 201, 204, 400, and 404, and verify service interactions using Moq Verify.
-Authentication and infrastructure errors are intentionally excluded as they belong to integration testing.
+This keeps unit tests:
 
-🏗️ Project Structure (Industry Standard)
+* ⚡ Fast
+* 🧱 Isolated
+* 🔁 Reliable
+
+---
+
+## 🎯 What This Framework Covers
+
+✔ Controller-level unit testing using **NUnit**
+✔ Dependency isolation using **Moq**
+✔ Verification of service interactions
+✔ HTTP response validation (200, 201, 204, 400, 404)
+✔ CI automation using **GitHub Actions**
+
+❌ Authentication, authorization, infrastructure failures are intentionally excluded (covered in integration/system testing).
+
+---
+
+## 🏗️ Project Structure (Industry Standard)
+
+```
 UserApi
 │
 ├── Controllers
@@ -36,141 +55,212 @@ UserApi
 │   ├── OrdersControllerTest.cs
 │   ├── PaymentControllerTest.cs
 │   ├── UsersControllerTest.cs
+```
 
-👉 Each controller has its own test class (real-world best practice)
+👉 **One test class per controller** — a real-world best practice for readability and scalability.
+
+---
 
 ## 🧠 Key Technologies Used
-## Tool	      Purpose
-NUnit	--> Test framework
 
-Moq	--> Mocking dependencies
+| Tool             | Purpose                      |
+| ---------------- | ---------------------------- |
+| NUnit            | Unit testing framework       |
+| Moq              | Mocking service dependencies |
+| ASP.NET Core MVC | Web API framework            |
+| Coverlet         | Code coverage                |
+| .NET SDK         | Runtime & build              |
+| GitHub Actions   | CI automation                |
 
-ASP.NET Core MVC-->	Web API framework
+---
 
-coverlet-->	Code coverage
+## ✔️ What We Unit Test
 
-.NET SDK	-->Runtime
+* Input validation → **400 BadRequest**
+* Successful execution → **200 OK / 201 Created / 204 NoContent**
+* Missing data → **404 NotFound**
+* Service interaction → **Verify() call count**
 
+---
 
-## ✔️ What We Test (🧪 Testing Strategy Explained Simply)
+## ❌ What We Do NOT Unit Test
 
-Input validation → 400 BadRequest
+These belong to **integration or system testing**:
 
-Successful execution → 200 OK, 201 Created, 204 NoContent
+* Authentication (401)
+* Authorization (403)
+* Server / infrastructure failures (500+)
+* Network or gateway errors
 
-Missing data → 404 NotFound
+---
 
-Service interaction → Verify() call count
+## 🔧 How Unit Tests Are Written (Step-by-Step)
 
-## ❌ What We Don’t Unit Test (👉 These belong to integration or system testing)
+1️⃣ **Mock the service dependency**
 
-Authentication (401)
-
-Authorization (403)
-
-Server failures (500+)
-
-Network / Gateway errors
-
-
-## 🔧 How Unit Tests Are Written
-
-1️⃣ Mock the Service
-
+```csharp
 _mockService = new Mock<IBookingService>();
+```
 
-2️⃣ Inject Mock into Controller
+2️⃣ **Inject mock into controller**
 
+```csharp
 _controller = new BookingController(_mockService.Object);
+```
 
-3️⃣ Setup Expected Behavior
+3️⃣ **Setup expected behavior**
 
+```csharp
 _mockService
-  .Setup(s => s.Create(It.IsAny<Booking>()))
-  .Returns(booking);
+    .Setup(s => s.Create(It.IsAny<Booking>()))
+    .Returns(booking);
+```
 
-4️⃣ Call Controller Action
+4️⃣ **Call controller action**
 
-var result = _controller.CreateBooking(booking);
+```csharp
+var result = await _controller.CreateBooking(booking);
+```
 
-5️⃣ Assert HTTP Response
+5️⃣ **Assert HTTP response**
 
+```csharp
 Assert.That(result, Is.InstanceOf<OkObjectResult>());
+```
 
-6️⃣ Verify Service Call
+6️⃣ **Verify service interaction**
 
+```csharp
 _mockService.Verify(s => s.Create(It.IsAny<Booking>()), Times.Once);
+```
 
-## 🔄 CI/CD Readiness
+---
 
-This framework is designed to be CI/CD friendly and can be easily integrated into pipelines (Azure DevOps / GitHub Actions / GitLab CI) to ensure:
-- Automated test execution on every build
-- Fast feedback on controller-level failures
-- Quality gates before deployment
+## 🔄 CI/CD Integration (GitHub Actions)
 
+This project includes a **GitHub Actions CI pipeline** that automatically:
 
+* Builds the solution
+* Executes all unit tests
+* Runs on **push**, **pull requests**, and **daily scheduled execution**
 
-🎤 Interview-Ready Explanation (Short Answer)
+### CI Triggers
 
-“I unit test only the controller logic by mocking service dependencies using Moq.
-This ensures fast, isolated, and reliable tests without external dependencies.”
+* ✅ Push to `main`
+* ✅ Pull request to `main`
+* ✅ Daily scheduled run (regression safety net)
+
+### Why CI Matters Here
+
+* Prevents broken controller logic from merging
+* Provides fast feedback to developers
+* Ensures framework reliability over time
+
+> This same CI design directly maps to **Azure DevOps pipelines** with minor syntax differences.
+
+---
+
+## 🎤 Interview-Ready Explanation (Short Answer)
+
+> “I unit test only the controller logic by mocking service dependencies using Moq.
+> This ensures fast, isolated, and reliable tests without external dependencies.
+> These tests are executed automatically via CI on every push, PR, and daily scheduled run.”
+
+---
 
 ## 🔥 Common Interview Questions & Answers
 
-Q: Why use Moq?
+### Q: Why use Moq?
 
-A: To isolate controller logic and avoid database or API calls.Moq allows me to replace real services with fake objects so I can test controller behavior without hitting database or external APIs.
+**A:** To isolate controller logic and avoid real database or API calls. Moq allows replacing real services with fake implementations.
 
-Q: Why Verify()?
+---
 
-A: To ensure the controller calls the service exactly as expected.
+### Q: Why do you use `Verify()`?
 
-Q: Why one test class per controller?
+**A:** To ensure the controller invokes service methods exactly as expected.
 
-A: Improves readability, maintenance, and scalability.
+---
 
-Q: What is isolation in unit testing?
+### Q: Why one test class per controller?
 
-A: Isolation means testing a component independently without its real dependencies.
+**A:** It improves readability, maintainability, and aligns with real-world project structure.
 
-Q: Difference between unit test and integration test?
+---
 
-A: Unit tests validate logic in isolation; integration tests validate interaction with real components.
+### Q: What is isolation in unit testing?
 
-Q: What is the purpose of [SetUp]?
+**A:** Testing a component independently without its real dependencies.
 
-A: To initialize common objects before each test to avoid duplication.
+---
 
-Q: Why do you use Times.Once?
+### Q: Difference between unit testing and integration testing?
 
-A: To ensure the service method is invoked exactly once for valid requests.
+**A:** Unit tests validate logic in isolation; integration tests validate interaction with real components.
 
-Q: Why did you use Times.Never in some tests?
+---
 
-A: To ensure invalid inputs do not trigger service calls.
+### Q: What is the purpose of `[SetUp]`?
 
-Q: Why are your test methods async?
+**A:** To initialize common objects before each test and avoid duplication.
 
-A: Because the controller actions being tested are asynchronous and return Task.
+---
 
-Q: Why do you return Task instead of void?
+### Q: Why do you use `Times.Once`?
 
-A: Task allows NUnit to await execution and correctly capture exceptions.
+**A:** To ensure the service method is called exactly once for valid requests.
 
-Q: What happens if you write async void?
+---
 
-A: NUnit cannot catch exceptions properly, which may lead to false positives.
+### Q: Why do you use `Times.Never` in some tests?
 
-Q: Can you mock private methods?
+**A:** To ensure invalid inputs do not trigger service calls.
 
-A: No, Moq supports mocking interfaces and virtual methods only.
+---
 
-Q: how do unit tests fit into CI/CD?
+### Q: Why are your test methods async?
 
-A: Unit tests are executed as part of the build pipeline.
-If any test fails, the build fails, ensuring only quality code moves forward.
+**A:** Because controller actions are asynchronous and return `Task<IActionResult>`.
 
-Q: Your controller methods are async. How do you test them?
+---
 
-A: Since the controller actions return Task<IActionResult>, my test methods are also async Task.
-I use await to ensure NUnit correctly captures execution and exceptions.
+### Q: Why return `Task` instead of `void` in tests?
+
+**A:** `Task` allows NUnit to await execution and correctly capture exceptions.
+
+---
+
+### Q: What happens if you use `async void`?
+
+**A:** NUnit cannot reliably catch exceptions, leading to false positives.
+
+---
+
+### Q: Can you mock private methods?
+
+**A:** No. Moq supports mocking interfaces and virtual methods only.
+
+---
+
+### Q: How do unit tests fit into CI/CD?
+
+**A:** Unit tests run as part of the CI pipeline. If any test fails, the build fails, blocking bad code from progressing.
+
+---
+
+### Q: How do you test async controller methods?
+
+**A:** Test methods are written as `async Task` and awaited so NUnit correctly captures execution and exceptions.
+
+---
+
+## ✅ Summary
+
+✔ Industry-aligned controller-level unit testing
+✔ Clean separation of concerns
+✔ CI-enabled automation
+✔ Interview-ready structure and explanations
+
+---
+
+📌 **This repository is intentionally built as a reference implementation for enterprise-grade Web API unit testing and CI practices.**
