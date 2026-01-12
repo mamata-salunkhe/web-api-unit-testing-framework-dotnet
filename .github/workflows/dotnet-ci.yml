@@ -1,31 +1,35 @@
-name: .NET Web & API Unit Tests CI
+name: .NET Web API Unit Test CI
 
 on:
   push:
     branches: [ "main" ]
+
   pull_request:
     branches: [ "main" ]
+
   schedule:
-    - cron: '0 1 * * *'
+    # Daily run at 9:00 AM IST (03:30 UTC)
+    - cron: '30 3 * * *'
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    name: Build & Run Unit Tests
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore WebServiceUnitTestingDemo.slnx
+      - name: Restore dependencies
+        run: dotnet restore WebServiceUnitTestingDemo.slnx
 
-    - name: Build solution
-      run: dotnet build WebServiceUnitTestingDemo.slnx --no-restore --configuration Release
+      - name: Build solution
+        run: dotnet build WebServiceUnitTestingDemo.slnx --no-restore --configuration Release
 
-    - name: Run tests
-      run: dotnet test WebServiceUnitTestingDemo.slnx --no-build --configuration Release
+      - name: Run unit tests
+        run: dotnet test WebServiceUnitTestingDemo.slnx --no-build --configuration Release --verbosity normal
